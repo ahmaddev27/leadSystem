@@ -1,5 +1,13 @@
-
-@extends('layouts.master')
+@extends('admin.layouts.master')
+@section('MainTitle', 'Welcome to Leads System')
+@section('title', 'Leads System')
+@section('title_link', route('admin.dashboard'))
+@section('subtitle1', 'Dashboard')
+@section('subtitle2', 'Home')
 @section('content')
-    <h1>Admin</h1>
+    <div id="kt_app_content_container" class="app-container container-fluid">
+
+    <h1>Categories</h1>
+
+    </div>
 @stop

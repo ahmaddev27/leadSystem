@@ -11,7 +11,8 @@ Route::middleware('auth:admin')->group(function () {
 });
 
 
-Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login')->middleware('guest:admin');
+
 
 // Admin routes
 require __DIR__.'/admin.php';
