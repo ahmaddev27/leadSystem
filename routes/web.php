@@ -1,7 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\AuthController;
+Route::get('/clear', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('view:clear');
+    Artisan::call('route:clear');
+    return redirect()->route('home');
+});
+
 
 
 Route::middleware('auth:admin')->group(function () {
@@ -11,7 +19,7 @@ Route::middleware('auth:admin')->group(function () {
 });
 
 
-Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login')->middleware('guest:admin');
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest:admin');
 
 
 // Admin routes

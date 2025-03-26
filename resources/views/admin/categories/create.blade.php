@@ -6,6 +6,9 @@
 @section('subtitle1_link', route('admin.categories.index'))
 @section('subtitle2', 'New Category')
 @push('css')
+    <!-- Font Awesome for icons -->
+
+
     <style>
         .options-preview {
             padding: 15px;
@@ -28,7 +31,7 @@
             <!--end::Card header-->
             <!--begin::Form-->
             <form id="kt_project_settings_form" method="Post" class="form fv-plugins-bootstrap5 fv-plugins-framework"
-                  action="{{route('admin.categories.store')}}" novalidate="novalidate">
+                  action="{{route('admin.categories.store')}}" novalidate="novalidate" enctype="multipart/form-data">
                 @csrf
                 <!--begin::Card body-->
                 <div class="card-body p-9">
@@ -260,77 +263,78 @@
                     </div>
                     <div class="card-body">
                         <div class="row mb-5">
-                            <div class="col-md-6 fv-row">
-                                <label class="fs-6 fw-semibold mb-2">Question Text <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-solid question-text"
-                                       name="questions[][question]" required>
+                            <div class="col-md-4 fv-row">
+                                <label class="fs-6 fw-semibold mb-2">Question Text <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-solid question-text" name="questions[][question]" required>
                             </div>
-                            <div class="col-md-6 fv-row">
-                                <label class="fs-6 fw-semibold mb-2">Field Type <span
-                                        class="text-danger">*</span></label>
-                                <select class="form-select form-select-solid field-type" name="questions[][field_type]"
-                                        required>
+                            <div class="col-md-3 fv-row">
+                                <label class="fs-6 fw-semibold mb-2">Field Type <span class="text-danger">*</span></label>
+                                <select class="form-select form-select-solid field-type" name="questions[][field_type]" required>
+                                    <option selected disabled value="">Select Question Type</option>
                                     <option value="text">Text Input</option>
                                     <option value="textarea">Text Area</option>
                                     <option value="select">Dropdown</option>
                                     <option value="radio">Radio Buttons</option>
-                                    <option value="checkbox">Checkboxes</option>
+                                    <option value="checkbox">Checkbox</option>
                                     <option value="number">Number</option>
                                     <option value="email">Email</option>
                                     <option value="date">Date</option>
                                 </select>
                             </div>
+                            <div class="col-md-3 fv-row">
+                                <label class="fs-6 fw-semibold mb-2">Icon Image</label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control form-control-solid question-icon-input" name="questions[][icon]" accept="image/*">
+                                    <button type="button" class="btn btn-light-danger remove-icon-btn d-none">
+                                        <i class="ki-outline ki-trash fs-2"></i>
+                                    </button>
+                                </div>
+                                <div class="icon-preview mt-2 d-none"></div>
+                            </div>
                         </div>
 
-                        <!-- Options Container - Updated for better radio/checkbox handling -->
+                        <!-- Placeholder Field -->
+                        <div class="row mb-5 placeholder-container d-none">
+                            <div class="col-12 fv-row">
+                                <label class="fs-6 fw-semibold mb-2">Placeholder Text</label>
+                                <input type="text" class="form-control form-control-solid question-placeholder" name="questions[][placeholder]" placeholder="Enter placeholder text">
+                            </div>
+                        </div>
+
+                        <!-- Options Field -->
                         <div class="row mb-5 options-container d-none">
                             <div class="col-12">
-                                <label class="fs-6 fw-semibold mb-2">Options (one per line) <span
-                                        class="text-danger">*</span></label>
-                                <textarea class="form-control form-control-solid options" name="questions[][options]"
-                                          rows="3" placeholder="Enter each option on a new line"></textarea>
-                                <div class="form-text">Enter each option on a new line. These will be displayed as radio
-                                    buttons or checkboxes.
-                                </div>
-
-                                <!-- Preview Section -->
-                                <div class="mt-3 options-preview d-none">
-                                    <label class="fs-6 fw-semibold mb-2">Preview:</label>
-                                    <div class="preview-content"></div>
-                                </div>
+                                <label class="fs-6 fw-semibold mb-2">Options (one per line) <span class="text-danger">*</span></label>
+                                <textarea class="form-control form-control-solid options" name="questions[][options]" rows="3"></textarea>
+                                <div class="form-text">Enter each option on a new line</div>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-check form-check-custom form-check-solid">
-                                    <input class="form-check-input is-required" type="checkbox" value="1"
-                                           name="questions[][is_required]" id="is_required_template" checked>
+                                    <input class="form-check-input is-required" type="checkbox" value="1" name="questions[][is_required]" id="is_required_template" checked>
                                     <label class="form-check-label" for="is_required_template">Required Question</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="fs-6 fw-semibold mb-2">Display Order</label>
-                                    <input type="number" class="form-control form-control-solid order"
-                                           name="questions[][order]" value="0" min="0">
+                                    <input type="number" class="form-control form-control-solid order" name="questions[][order]" value="0" min="0">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!--end:Form-->
+            </div>            <!--end:Form-->
         </div>
-
 
     </div>
 
 @stop
 
 @push('js')
+
 
     <!-- JavaScript for dynamic form handling -->
 
@@ -343,6 +347,7 @@
             const questionsContainer = document.getElementById('questions-container');
             const questionTemplate = document.getElementById('question-template');
             let questionCount = 0;
+
 
 
             // Form validation setup
@@ -508,7 +513,7 @@
                 questionCount = questions.length;
             }
 
-            // Add new question
+            // Add new question with icon and placeholder support
             addQuestionBtn.addEventListener('click', function() {
                 questionCount++;
                 const newQuestion = questionTemplate.cloneNode(true);
@@ -536,6 +541,34 @@
                     }
                 });
 
+                // Image upload for icon
+                const iconInput = newQuestion.querySelector('.question-icon-input');
+                const iconPreview = newQuestion.querySelector('.icon-preview');
+                const iconRemoveBtn = newQuestion.querySelector('.remove-icon-btn');
+
+                // Handle icon image selection
+                iconInput.addEventListener('change', function(e) {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+
+                        reader.onload = function(e) {
+                            iconPreview.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="max-width: 50px; max-height: 50px;">`;
+                            iconPreview.classList.remove('d-none');
+                            iconRemoveBtn.classList.remove('d-none');
+                        }
+
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+
+                // Handle icon removal
+                iconRemoveBtn.addEventListener('click', function() {
+                    iconInput.value = '';
+                    iconPreview.innerHTML = '';
+                    iconPreview.classList.add('d-none');
+                    this.classList.add('d-none');
+                });
+
                 // Remove question functionality
                 const removeBtn = newQuestion.querySelector('.remove-question');
                 removeBtn.addEventListener('click', function() {
@@ -546,28 +579,21 @@
                 // Field type change handler
                 const fieldTypeSelect = newQuestion.querySelector('.field-type');
                 const optionsContainer = newQuestion.querySelector('.options-container');
-                const optionsTextarea = newQuestion.querySelector('.options');
+                const placeholderContainer = newQuestion.querySelector('.placeholder-container');
 
                 fieldTypeSelect.addEventListener('change', function() {
                     const showOptions = ['select', 'radio', 'checkbox'].includes(this.value);
+                    const showPlaceholder = ['text', 'textarea', 'email', 'number', 'date'].includes(this.value);
+
                     optionsContainer.classList.toggle('d-none', !showOptions);
-
-                    // Update preview immediately
-                    if (showOptions) {
-                        updateOptionsPreview(newQuestion, this.value, optionsTextarea.value);
-                    } else {
-                        newQuestion.querySelector('.options-preview').classList.add('d-none');
-                    }
-                });
-
-                // Options textarea change handler
-                optionsTextarea.addEventListener('input', function() {
-                    updateOptionsPreview(newQuestion, fieldTypeSelect.value, this.value);
+                    placeholderContainer.classList.toggle('d-none', !showPlaceholder);
                 });
 
                 questionsContainer.appendChild(newQuestion);
             });
 
+
+            // Form submission handler
             // Form submission handler
             submitButton.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -581,34 +607,38 @@
                         // Prepare form data
                         let formData = new FormData(form);
 
-                        // Handle dynamic questions - only include valid questions
-                        let questions = [];
+                        // Handle dynamic questions
+                        let questionIndex = 0;
                         document.querySelectorAll('.question-item').forEach((questionEl) => {
-                            const questionText = questionEl.querySelector('.question-text').value.trim();
+                            const questionText = questionEl.querySelector('.question-text')?.value.trim();
 
-                            // Only include questions that have text
                             if (questionText) {
-                                const questionData = {
-                                    question: questionText,
-                                    field_type: questionEl.querySelector('.field-type').value,
-                                    is_required: questionEl.querySelector('.is-required').checked ? 1 : 0,
-                                    order: questionEl.querySelector('.order').value || 0
-                                };
+                                // Add question data to formData
+                                formData.append(`questions[${questionIndex}][question]`, questionText);
+                                formData.append(`questions[${questionIndex}][field_type]`, questionEl.querySelector('.field-type')?.value);
+                                formData.append(`questions[${questionIndex}][is_required]`, questionEl.querySelector('.is-required')?.checked ? 1 : 0);
+                                formData.append(`questions[${questionIndex}][order]`, questionEl.querySelector('.order')?.value || 0);
 
-                                // Include options if field type requires it
-                                const options = questionEl.querySelector('.options').value;
-                                if (['select', 'radio', 'checkbox'].includes(questionData.field_type) && options.trim()) {
-                                    questionData.options = options;
+                                const placeholder = questionEl.querySelector('.question-placeholder')?.value;
+                                if (placeholder) {
+                                    formData.append(`questions[${questionIndex}][placeholder]`, placeholder);
                                 }
 
-                                questions.push(questionData);
+                                // Handle options
+                                const options = questionEl.querySelector('.options')?.value;
+                                if (options?.trim()) {
+                                    formData.append(`questions[${questionIndex}][options]`, options);
+                                }
+
+                                // Handle icon file
+                                const iconInput = questionEl.querySelector('.question-icon-input');
+                                if (iconInput?.files[0]) {
+                                    formData.append(`questions[${questionIndex}][icon]`, iconInput.files[0]);
+                                }
+
+                                questionIndex++;
                             }
                         });
-
-                        // Only add questions to form data if there are any
-                        if (questions.length > 0) {
-                            formData.append('questions', JSON.stringify(questions));
-                        }
 
                         // AJAX request
                         $.ajax({
@@ -622,55 +652,36 @@
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                             },
                             success: function(response) {
-                                // Hide loading state
+                                // Handle response
                                 submitButton.removeAttribute('data-kt-indicator');
                                 submitButton.disabled = false;
 
                                 if (response.success) {
-                                    toastr.success(response.message || "Category saved successfully!");
-
-                                    // Redirect if needed
+                                    toastr.success(response.message || "Saved successfully!");
                                     if (response.redirect) {
-                                        setTimeout(() => {
-                                            window.location.href = response.redirect;
-                                        }, 1500);
+                                        setTimeout(() => window.location.href = response.redirect, 1500);
                                     }
                                 } else {
-                                    toastr.error(response.message || "Error saving category");
-
-                                    // Handle validation errors
+                                    toastr.error(response.message || "Error occurred");
                                     if (response.errors) {
-                                        for (const [field, errors] of Object.entries(response.errors)) {
-                                            errors.forEach(error => {
-                                                toastr.error(error);
-                                            });
-                                        }
+                                        Object.values(response.errors).flat().forEach(error => toastr.error(error));
                                     }
                                 }
                             },
                             error: function(xhr) {
-                                // Hide loading state
                                 submitButton.removeAttribute('data-kt-indicator');
                                 submitButton.disabled = false;
 
-                                let errorMessage = "An error occurred while saving";
-                                if (xhr.responseJSON && xhr.responseJSON.message) {
-                                    errorMessage = xhr.responseJSON.message;
-                                }
+                                const errorMessage = xhr.responseJSON?.message || "Request failed";
                                 toastr.error(errorMessage);
 
-                                // Handle validation errors
-                                if (xhr.responseJSON && xhr.responseJSON.errors) {
-                                    for (const [field, errors] of Object.entries(xhr.responseJSON.errors)) {
-                                        errors.forEach(error => {
-                                            toastr.error(error);
-                                        });
-                                    }
+                                if (xhr.responseJSON?.errors) {
+                                    Object.values(xhr.responseJSON.errors).flat().forEach(error => toastr.error(error));
                                 }
                             }
                         });
                     } else {
-                        toastr.error("Please correct the form errors and try again");
+                        toastr.error("Please correct form errors");
                     }
                 });
             });

@@ -35,4 +35,11 @@ class Category extends Model
             ->withPivot('commission_percentage')
             ->withTimestamps();
     }
+
+    public function getImae()
+    {
+        return $this->image ? url('storage/'.$this->image) : null;
+    }
+
+
 }

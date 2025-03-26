@@ -14,6 +14,8 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->string('question');
             $table->string('field_type')->default('text'); // text, textarea, select, checkbox, etc.
+            $table->string('icon', 50)->nullable();
+            $table->string('placeholder')->nullable();
             $table->json('options')->nullable(); // For select, radio, checkbox options
             $table->boolean('is_required')->default(false);
             $table->integer('order')->default(0);

@@ -24,8 +24,10 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::guard('admin')->attempt($credentials)) {
-            // Regenerate session for security
+        $remember = $request->has('remember');
+        if (Auth::guard('admin')->attempt($credentials, $remember)) {
+            $request->session()->regenerate();
+
             $request->session()->regenerate();
 
             return response()->json([
@@ -33,6 +35,8 @@ class AuthController extends Controller
                 'redirect' => route('admin.dashboard'),
             ]);
         }
+
+
 
         return response()->json([
             'success' => false,
