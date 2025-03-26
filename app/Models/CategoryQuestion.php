@@ -11,6 +11,8 @@ class CategoryQuestion extends Model
         'question',
         'field_type',
         'options',
+        'placeholder',
+        'icon',
         'is_required',
         'order',
     ];

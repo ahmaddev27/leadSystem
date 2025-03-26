@@ -29,6 +29,11 @@ class Category extends Model
         return $this->hasMany(CategoryQuestion::class);
     }
 
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
     public function leadTypes(): BelongsToMany
     {
         return $this->belongsToMany(LeadType::class, 'commission_structures')

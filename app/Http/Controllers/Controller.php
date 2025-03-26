@@ -13,7 +13,7 @@ abstract class Controller
         try {
             $fileName = Str::random(16).'.'.$file->getClientOriginalExtension();
             // Save to the "public" disk under uploads/$path
-            return $file->storeAs("public/uploads/$path", $fileName);
+            return $file->storeAs("/uploads/$path", $fileName);
         } catch (\Exception $e) {
             report($e);
             return false;

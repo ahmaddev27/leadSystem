@@ -14,35 +14,25 @@
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-fluid">
                 <!--begin::Products-->
-                <div class="card card-flush">
+                <div class="card ">
                     <!--begin::Card header-->
-                    <div class="card-header align-items-center py-5 gap-2 gap-md-5">
+                    <div class="card-header border-0 pt-6">
                         <!--begin::Card title-->
                         <div class="card-title">
-                            <!--begin::Search-->
-                            <div class="d-flex align-items-center position-relative my-1">
-                                <i class="ki-outline ki-magnifier fs-3 position-absolute ms-4"></i>
-                                <input type="text" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="Search Product" />
-                            </div>
-                            <!--end::Search-->
+                            <h2>Categories</h2>
                         </div>
-                        <!--end::Card title-->
+                        <!--begin::Card title-->
                         <!--begin::Card toolbar-->
-                        <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
-                            <div class="w-100 mw-150px">
-                                <!--begin::Select2-->
-                                <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Status" data-kt-ecommerce-product-filter="status">
-                                    <option></option>
-                                    <option value="all">All</option>
-                                    <option value="published">Published</option>
-                                    <option value="scheduled">Scheduled</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                                <!--end::Select2-->
+                        <div class="card-toolbar">
+                            <!--begin::Toolbar-->
+                            <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                                <!--begin::Add customer-->
+                                <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
+                                    <i class="ki-outline ki-plus fs-2"></i>Add Category
+                                </a>
+                                <!--end::Add customer-->
                             </div>
-                            <!--begin::Add product-->
-                            <a href="{{route('admin.categories.create')}}" class="btn btn-primary"><i class="fas fa-plus fs-4 me-2"></i> New Category</a>
-                            <!--end::Add product-->
+                            <!--end::Toolbar-->
                         </div>
                         <!--end::Card toolbar-->
                     </div>
@@ -50,97 +40,24 @@
                     <!--begin::Card body-->
                     <div class="card-body pt-0">
                         <!--begin::Table-->
-                        <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_ecommerce_products_table">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_categories_table">
                             <thead>
                             <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
                                 <th class="w-10px pe-2">
                                     <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
-                                        <input class="form-check-input" type="checkbox" data-kt-check="true" data-kt-check-target="#kt_ecommerce_products_table .form-check-input" value="1" />
+                                        <input class="form-check-input" type="checkbox" data-kt-check="true" data-kt-check-target="#kt_categories_table .form-check-input" value="1" />
                                     </div>
                                 </th>
-                                <th class="min-w-200px">Product</th>
-                                <th class="text-end min-w-100px">SKU</th>
-                                <th class="text-end min-w-70px">Qty</th>
-                                <th class="text-end min-w-100px">Price</th>
-                                <th class="text-end min-w-100px">Rating</th>
+                                <th class="min-w-100px">Image</th>
+                                <th class="min-w-200px">Name</th>
+                                <th class="text-end min-w-100px">Products</th>
                                 <th class="text-end min-w-100px">Status</th>
+                                <th class="text-end min-w-100px">Created At</th>
                                 <th class="text-end min-w-70px">Actions</th>
                             </tr>
                             </thead>
                             <tbody class="fw-semibold text-gray-600">
-
-                            <tr>
-                                <td>
-                                    <div class="form-check form-check-sm form-check-custom form-check-solid">
-                                        <input class="form-check-input" type="checkbox" value="1" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <!--begin::Thumbnail-->
-                                        <a href="../../demo55/dist/apps/ecommerce/catalog/edit-product.html" class="symbol symbol-50px">
-                                            <span class="symbol-label" style="background-image:url(assets/media//stock/ecommerce/31.png);"></span>
-                                        </a>
-                                        <!--end::Thumbnail-->
-                                        <div class="ms-5">
-                                            <!--begin::Title-->
-                                            <a href="../../demo55/dist/apps/ecommerce/catalog/edit-product.html" class="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-product-filter="product_name">Product 31</a>
-                                            <!--end::Title-->
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-end pe-0">
-                                    <span class="fw-bold">01368003</span>
-                                </td>
-                                <td class="text-end pe-0" data-order="2">
-                                    <span class="badge badge-light-warning">Low stock</span>
-                                    <span class="fw-bold text-warning ms-3">2</span>
-                                </td>
-                                <td class="text-end pe-0">174</td>
-                                <td class="text-end pe-0" data-order="rating-5">
-                                    <div class="rating justify-content-end">
-                                        <div class="rating-label checked">
-                                            <i class="ki-outline ki-star fs-6"></i>
-                                        </div>
-                                        <div class="rating-label checked">
-                                            <i class="ki-outline ki-star fs-6"></i>
-                                        </div>
-                                        <div class="rating-label checked">
-                                            <i class="ki-outline ki-star fs-6"></i>
-                                        </div>
-                                        <div class="rating-label checked">
-                                            <i class="ki-outline ki-star fs-6"></i>
-                                        </div>
-                                        <div class="rating-label checked">
-                                            <i class="ki-outline ki-star fs-6"></i>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-end pe-0" data-order="Inactive">
-                                    <!--begin::Badges-->
-                                    <div class="badge badge-light-danger">Inactive</div>
-                                    <!--end::Badges-->
-                                </td>
-                                <td class="text-end">
-                                    <a href="#" class="btn btn-sm btn-light btn-flex btn-center btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
-                                        <i class="ki-outline ki-down fs-5 ms-1"></i></a>
-                                    <!--begin::Menu-->
-                                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
-                                        <!--begin::Menu item-->
-                                        <div class="menu-item px-3">
-                                            <a href="../../demo55/dist/apps/ecommerce/catalog/edit-product.html" class="menu-link px-3">Edit</a>
-                                        </div>
-                                        <!--end::Menu item-->
-                                        <!--begin::Menu item-->
-                                        <div class="menu-item px-3">
-                                            <a href="#" class="menu-link px-3" data-kt-ecommerce-product-filter="delete_row">Delete</a>
-                                        </div>
-                                        <!--end::Menu item-->
-                                    </div>
-                                    <!--end::Menu-->
-                                </td>
-                            </tr>
-
+                            <!-- Data will be loaded via AJAX -->
                             </tbody>
                         </table>
                         <!--end::Table-->
@@ -156,3 +73,101 @@
 
 
 @stop
+
+@push('js')
+    <link href="{{url('dashboard/assets/plugins/custom/datatables/datatables.bundle.css')}}" rel="stylesheet" type="text/css"/>
+    <script src="{{url('dashboard/assets/plugins/custom/datatables/datatables.bundle.js')}}"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Datatable initialization
+            const table = $('#kt_categories_table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('admin.categories.list') }}",
+                    type: "GET"
+                },
+                columns: [
+                    { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
+                    { data: 'image', name: 'image', orderable: false, searchable: false },
+                    { data: 'name', name: 'name' },
+                    { data: 'products_count', name: 'products_count', className: 'text-end' },
+                    { data: 'status', name: 'is_active', className: 'text-end' },
+                    { data: 'created_at', name: 'created_at', className: 'text-end' },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-end' }
+                ],
+                columnDefs: [
+                    { targets: [0, 1, 6], width: '50px' },
+                    { targets: 3, width: '100px' },
+                    { targets: 4, width: '100px' },
+                    { targets: 5, width: '150px' }
+                ],
+                order: [[2, 'asc']],
+                dom:
+                    "<'row'" +
+                    "<'col-sm-6 d-flex align-items-center justify-conten-start'l>" +
+                    "<'col-sm-6 d-flex align-items-center justify-content-end'f>" +
+                    ">" +
+                    "<'table-responsive'tr>" +
+                    "<'row'" +
+                    "<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
+                    "<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
+                    ">"
+            });
+
+            // Delete category
+            $(document).on('click', '.delete-category', function(e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+
+                Swal.fire({
+                    text: "Are you sure you want to delete this category?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: "Yes, delete!",
+                    cancelButtonText: "No, cancel",
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                        cancelButton: "btn btn-active-light"
+                    }
+                }).then(function(result) {
+                    if (result.value) {
+                        $.ajax({
+                            url: "{{ url('admin/categories') }}/" + id,
+                            type: "DELETE",
+                            data: {
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(response) {
+                                Swal.fire({
+                                    text: "Category deleted successfully!",
+                                    icon: "success",
+                                    buttonsStyling: false,
+                                    confirmButtonText: "Ok, got it!",
+                                    customClass: {
+                                        confirmButton: "btn btn-primary"
+                                    }
+                                }).then(function() {
+                                    table.ajax.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    text: "Error deleting category",
+                                    icon: "error",
+                                    buttonsStyling: false,
+                                    confirmButtonText: "Ok, got it!",
+                                    customClass: {
+                                        confirmButton: "btn btn-primary"
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

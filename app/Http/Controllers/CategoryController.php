@@ -9,6 +9,7 @@ use App\Models\CategoryQuestion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\DataTables;
 
 class CategoryController extends Controller
 {
@@ -17,6 +18,61 @@ class CategoryController extends Controller
         return view('admin.categories.index');
     }
 
+    public function show($id)
+    {
+        return $id;
+    }
+
+    public function list(Request $request)
+    {
+        $categories = Category::query()
+            ->withCount('products')
+            ->select(['id', 'name', 'image', 'is_active', 'created_at']);
+
+        return DataTables::of($categories)
+            ->addColumn('checkbox', function($category) {
+                return '<div class="form-check form-check-sm form-check-custom form-check-solid">
+                <input class="form-check-input" type="checkbox" value="'.$category->id.'" />
+            </div>';
+            })
+            ->addColumn('image', function($category) {
+                return '<div class="symbol symbol-50px">
+                <span class="symbol-label" style="background-image:url('.$category->getImae().');"></span>
+            </div>';
+            })
+            ->addColumn('name', function($category) {
+                return '<div class="d-flex align-items-center">
+                <div class="ms-5">
+                    <a href="'.route('admin.categories.edit', $category->id).'" class="text-gray-800 text-hover-primary fs-5 fw-bold">'.$category->name.'</a>
+                </div>
+            </div>';
+            })
+            ->addColumn('products_count', function($category) {
+                return $category->products_count;
+            })
+            ->addColumn('status', function($category) {
+                return $category->is_active
+                    ? '<div class="badge badge-light-success">Active</div>'
+                    : '<div class="badge badge-light-danger">Inactive</div>';
+            })
+            ->addColumn('created_at', function($category) {
+                return $category->created_at->format('M d, Y');
+            })
+            ->addColumn('actions', function($category) {
+                return '<a href="#" class="btn btn-sm btn-light btn-flex btn-center btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
+                    <i class="ki-outline ki-down fs-5 ms-1"></i></a>
+                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
+                    <div class="menu-item px-3">
+                        <a href="'.route('admin.categories.edit', $category->id).'" class="menu-link px-3">Edit</a>
+                    </div>
+                    <div class="menu-item px-3">
+                        <a href="#" class="menu-link px-3 delete-category" data-id="'.$category->id.'">Delete</a>
+                    </div>
+                </div>';
+            })
+            ->rawColumns(['checkbox', 'image', 'name', 'status', 'actions'])
+            ->make(true);
+    }
 
     public function create()
     {
@@ -186,7 +242,7 @@ class CategoryController extends Controller
     }
 
 // Update Method
-    public function update(Request $request, Category $productCategory)
+    public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -200,6 +256,7 @@ class CategoryController extends Controller
 
         DB::beginTransaction();
 
+        $productCategory= Category::findOrFail($id);
         try {
             // Update category
             $productCategory->update([
@@ -232,7 +289,7 @@ class CategoryController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Category updated successfully',
-                'redirect' => route('product-categories.index')
+                'redirect' => route('admin.categories.index')
             ]);
 
         } catch (\Exception $e) {

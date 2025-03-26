@@ -17,8 +17,8 @@ Route::prefix('admin')->as('admin.')->group(function () {
 // Protected routes
     Route::middleware('auth:admin')->group(function () {
         Route::get('dashboard', function () {return view('admin.dashboard');})->name('dashboard');
-        Route::resource('categories', CategoryController::class);
-
+        Route::resource('categories', CategoryController::class)->except('show');
+        Route::get('categories/list', [CategoryController::class, 'list'])->name('categories.list');
     });
 
 
