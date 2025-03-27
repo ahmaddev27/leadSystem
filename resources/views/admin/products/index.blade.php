@@ -27,8 +27,9 @@
                             <!--begin::Toolbar-->
                             <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
                                 <!--begin::Add customer-->
-                                <a href="{{ route('admin.categories.create') }}" class="btn btn-light-primary btn-sm mb-10">
-                                    <i class="ki-outline ki-plus fs-2"></i>Create new category</a>
+                                <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
+                                    <i class="ki-outline ki-plus fs-2"></i>Add Category
+                                </a>
                                 <!--end::Add customer-->
                             </div>
                             <!--end::Toolbar-->
@@ -161,6 +162,7 @@
     <link href="{{url('dashboard/assets/plugins/custom/datatables/datatables.bundle.css')}}" rel="stylesheet"
           type="text/css"/>
     <script src="{{url('dashboard/assets/plugins/custom/datatables/datatables.bundle.js')}}"></script>
+
 
 
     {{--Datatable adn detatils--}}

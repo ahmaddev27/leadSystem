@@ -18,11 +18,6 @@ class CategoryController extends Controller
         return view('admin.categories.index');
     }
 
-    public function show($id)
-    {
-        return $id;
-    }
-
     public function list(Request $request)
     {
         $categories = Category::query()

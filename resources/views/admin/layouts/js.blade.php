@@ -17,6 +17,13 @@
 <script src="{{url('dashboard/assets/plugins/global/plugins.bundle.js')}}"></script>
 
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".form-select").select2();
+    });
+</script>
+
+
     <script>
         $(document).ready(function () {
             $('#logout-btn').on('click', function (e) {

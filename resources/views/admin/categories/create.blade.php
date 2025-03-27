@@ -38,7 +38,7 @@
                     <div class="row mb-5">
                         <!--begin::Col-->
                         <div class="col-xl-3">
-                            <div class="fs-6 fw-semibold mt-2 mb-3">Project Logo</div>
+                            <div class="fs-6 fw-semibold mt-2 mb-3">Category Logo</div>
                         </div>
                         <!--end::Col-->
                         <!--begin::Col-->
@@ -269,7 +269,7 @@
                             </div>
                             <div class="col-md-3 fv-row">
                                 <label class="fs-6 fw-semibold mb-2">Field Type <span class="text-danger">*</span></label>
-                                <select class="form-select form-select-solid field-type" name="questions[][field_type]" required>
+                                <select class="form-select form-select-solid field-type"  name="questions[][field_type]" required>
                                     <option selected disabled value="">Select Question Type</option>
                                     <option value="text">Text Input</option>
                                     <option value="textarea">Text Area</option>

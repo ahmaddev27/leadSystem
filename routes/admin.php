@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 
 // Admin Routes
 
@@ -23,6 +24,12 @@ Route::prefix('admin')->as('admin.')->group(function () {
             Route::get('categories/list',  'list')->name('categories.list');
         });
 
+
+        Route::resource('products', ProductController::class)->except('show');
+        Route::controller(ProductController::class)->group(function () {
+            Route::get('products/details/{id}','details')->name('products.details');
+            Route::get('products/list',  'list')->name('products.list');
+        });
     });
 
 
