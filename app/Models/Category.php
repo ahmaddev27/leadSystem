@@ -41,7 +41,7 @@ class Category extends Model
             ->withTimestamps();
     }
 
-    public function getImae()
+    public function getImage()
     {
         return $this->image ? url('storage/'.$this->image) : null;
     }

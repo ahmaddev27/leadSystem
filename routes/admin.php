@@ -18,7 +18,11 @@ Route::prefix('admin')->as('admin.')->group(function () {
     Route::middleware('auth:admin')->group(function () {
         Route::get('dashboard', function () {return view('admin.dashboard');})->name('dashboard');
         Route::resource('categories', CategoryController::class)->except('show');
-        Route::get('categories/list', [CategoryController::class, 'list'])->name('categories.list');
+        Route::controller(CategoryController::class)->group(function () {
+            Route::get('categories/details/{id}','details')->name('categories.details');
+            Route::get('categories/list',  'list')->name('categories.list');
+        });
+
     });
 
 

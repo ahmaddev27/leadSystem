@@ -15,7 +15,7 @@ Route::get('/clear', function () {
 Route::middleware('auth:admin')->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard');
-    })->name('dashboard');
+    })->name('admin.dashboard');
 });
 
 

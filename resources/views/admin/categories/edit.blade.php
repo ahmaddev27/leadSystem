@@ -42,10 +42,10 @@
                     <div class="col-lg-8">
                         <!--begin::Image input-->
                         <div class="image-input image-input-outline" data-kt-image-input="true"
-                             style="background-image: url('{{ $category->image? $category->getImae(): Avatar::create($category->name)->toBase64() }}')">
+                             style="background-image: url('{{ $category->image? $category->getImage(): Avatar::create($category->name)->toBase64() }}')">
                             <!--begin::Preview existing avatar-->
                             <div class="image-input-wrapper w-125px h-125px bgi-position-center"
-                                 style="background-size: 75%; background-image: url('{{ $category->image ? $category->getImae(): Avatar::create($category->name)->toBase64() }}')"></div>
+                                 style="background-size: 75%; background-image: url('{{ $category->image ? $category->getImage(): Avatar::create($category->name)->toBase64() }}')"></div>
                             <!--end::Preview existing avatar-->
                             <!--begin::Label-->
                             <label

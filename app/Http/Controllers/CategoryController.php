@@ -26,51 +26,69 @@ class CategoryController extends Controller
     public function list(Request $request)
     {
         $categories = Category::query()
-            ->withCount('products')
-            ->select(['id', 'name', 'image', 'is_active', 'created_at']);
+            ->withCount(['products','questions']);
+
 
         return DataTables::of($categories)
-            ->addColumn('checkbox', function($category) {
+            ->addColumn('checkbox', function ($category) {
                 return '<div class="form-check form-check-sm form-check-custom form-check-solid">
-                <input class="form-check-input" type="checkbox" value="'.$category->id.'" />
+                <input class="form-check-input" type="checkbox" value="' . $category->id . '" />
             </div>';
             })
-            ->addColumn('image', function($category) {
+            ->addColumn('image', function ($category) {
                 return '<div class="symbol symbol-50px">
-                <span class="symbol-label" style="background-image:url('.$category->getImae().');"></span>
+                <span class="symbol-label" style="background-image:url(' . $category->getImage() . ');"></span>
             </div>';
             })
-            ->addColumn('name', function($category) {
+            ->addColumn('name', function ($category) {
                 return '<div class="d-flex align-items-center">
                 <div class="ms-5">
-                    <a href="'.route('admin.categories.edit', $category->id).'" class="text-gray-800 text-hover-primary fs-5 fw-bold">'.$category->name.'</a>
+                    <a href="#" class="text-gray-800 text-hover-primary fs-5 fw-bold view-questions" data-id="' . $category->id . '">' . $category->name . '</a>
                 </div>
             </div>';
             })
-            ->addColumn('products_count', function($category) {
-                return $category->products_count;
+            ->addColumn('details', function ($category) {
+                return '<div class="badge badge-light-info"> <a href="#" class="menu-link px-3 view-questions" data-id="' . $category->id . '"><i class="bi bi-eye fs-2x"></i></i></a></div>';
             })
-            ->addColumn('status', function($category) {
+            ->addColumn('status', function ($category) {
                 return $category->is_active
                     ? '<div class="badge badge-light-success">Active</div>'
                     : '<div class="badge badge-light-danger">Inactive</div>';
             })
-            ->addColumn('created_at', function($category) {
+            ->addColumn('created_at', function ($category) {
                 return $category->created_at->format('M d, Y');
             })
             ->addColumn('actions', function($category) {
-                return '<a href="#" class="btn btn-sm btn-light btn-flex btn-center btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
-                    <i class="ki-outline ki-down fs-5 ms-1"></i></a>
-                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
-                    <div class="menu-item px-3">
-                        <a href="'.route('admin.categories.edit', $category->id).'" class="menu-link px-3">Edit</a>
-                    </div>
-                    <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3 delete-category" data-id="'.$category->id.'">Delete</a>
-                    </div>
-                </div>';
+                return '<div class="d-flex justify-content-end">
+        <!--begin::Menu-->
+        <div class="me-0">
+            <button class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                <i class="ki-outline ki-dots-vertical fs-2"></i>
+            </button>
+            <!--begin::Menu 3-->
+            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3" data-kt-menu="true">
+                <!--begin::Menu item-->
+                <div class="menu-item px-3">
+                    <a href="'.route('admin.categories.edit', $category->id).'" class="menu-link px-3">Edit</a>
+                </div>
+                <!--end::Menu item-->
+                <!--begin::Menu item-->
+                <div class="menu-item px-3">
+                    <a id="delete" href="#" class="menu-link px-3 delete-category" data-action="'.route('admin.categories.destroy',$category->id).'" >Delete</a>
+                </div>
+                <!--end::Menu item-->
+                <!--begin::Menu item-->
+                <div class="menu-item px-3">
+                    <a href="#" class="menu-link px-3 view-questions" data-id="'.$category->id.'">View Questions</a>
+                </div>
+                <!--end::Menu item-->
+            </div>
+            <!--end::Menu 3-->
+        </div>
+        <!--end::Menu-->
+    </div>';
             })
-            ->rawColumns(['checkbox', 'image', 'name', 'status', 'actions'])
+            ->rawColumns(['checkbox', 'image', 'name', 'status', 'actions', 'details'])
             ->make(true);
     }
 
@@ -207,7 +225,7 @@ class CategoryController extends Controller
 // Edit Method
     public function edit($id)
     {
-        $productCategory=Category::findOrFail($id);
+        $productCategory = Category::findOrFail($id);
 
         // Load the category with relationships
         $productCategory->load([
@@ -256,7 +274,7 @@ class CategoryController extends Controller
 
         DB::beginTransaction();
 
-        $productCategory= Category::findOrFail($id);
+        $productCategory = Category::findOrFail($id);
         try {
             // Update category
             $productCategory->update([
@@ -407,6 +425,70 @@ class CategoryController extends Controller
 
             // Delete the questions
             $category->questions()->whereIn('id', $questionsToDelete)->delete();
+        }
+    }
+
+    public function details($id)
+    {
+        $category = Category::with(['questions', 'commissionStructures.leadType'])->findOrFail($id);
+
+        // Format commissions
+        $commissions = [];
+        foreach ($category->commissionStructures as $commission) {
+            $commissions[$commission->leadType->slug] = $commission->commission_percentage;
+        }
+
+        $category->image = $category->getImage();
+        return response()->json([
+            'questions' => $category->questions->map(function ($question) {
+                return [
+                    'question' => $question->question,
+                    'field_type' => $question->field_type,
+                    'is_required' => $question->is_required,
+                    'options' => $question->options,
+                    'order' => $question->order,
+
+                ];
+            }),
+            'commissions' => $commissions,
+            'category' => $category
+        ]);
+    }
+
+    public function destroy(Category $category)
+    {
+        try {
+            // Delete questions and their images first
+            $category->questions->each(function($question) {
+                // Check if question has an image and delete it
+                if ($question->icon) {
+                    $this->deleteImage($question->icon);
+                }
+                $question->delete();
+            });
+
+            // Delete other related records
+            $category->products()->delete();
+            $category->commissionStructures()->delete();
+            $category->leadTypes()->delete();
+
+            // Delete category image
+            if ($category->image) {
+                $this->deleteImage($category->image);
+            }
+
+            // Delete the category
+            $category->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Category deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting Category: ' . $e->getMessage()
+            ], 500);
         }
     }
 }
