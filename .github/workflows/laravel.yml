@@ -13,7 +13,7 @@ jobs:
 
     steps:
       # Step 1: Checkout the latest code
-      - name: 🚚 Get latest code
+      - name: � Get latest code
         uses: actions/checkout@v3
 
       # Step 2: Cache Composer dependencies
@@ -29,11 +29,15 @@ jobs:
       - name: 🚀 Clear Composer Cache
         run: composer clear-cache
 
-      # Step 4: Install dependencies (skip post-autoload-dump scripts)
-      - name: 📦 Install dependencies
-        run: composer install --no-dev --optimize-autoloader --no-scripts
+      # Step 4: Update Composer dependencies
+      - name: 🔄 Update Composer dependencies
+        run: composer update --no-dev --optimize-autoloader --no-scripts
 
-      # Step 5: Sync files via FTP (using SamKirkland's Action)
+      # Step 5: Dump optimized autoload
+      - name: 📦 Dump optimized autoload
+        run: composer dump-autoload --optimize
+
+      # Step 6: Sync files via FTP (using SamKirkland's Action)
       - name: 📂 Sync files to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
@@ -43,6 +47,4 @@ jobs:
           port: 21                                # The FTP port (usually 21)
           local-dir: './'                         # Upload the entire working directory
           force-full-deploy: true                 # Force uploading all files, including vendor
-
-      # Optional: Run Laravel Artisan commands if needed
 

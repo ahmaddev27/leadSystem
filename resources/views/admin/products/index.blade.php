@@ -220,7 +220,7 @@
                             </div>
                             <div class="row g-2" id="productGallery">
                 `;
- 
+
                                 // Add gallery images
                                 if (product.images && product.images.length > 0) {
                                     product.images.forEach(img => {
