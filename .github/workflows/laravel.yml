@@ -3,7 +3,7 @@ name: 🚀 Deploy Laravel Project to cPanel
 on:
   push:
     branches:
-      - main  # Deploy on push to the main branch
+      - master  # Deploy on push to the main branch
 
 jobs:
   web-deploy:
