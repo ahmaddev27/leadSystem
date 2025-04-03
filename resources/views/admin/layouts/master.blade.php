@@ -16,7 +16,7 @@ License: For each use you must have a valid license purchased only from above li
 <head>
     <base href="{{url('/')}}"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Metronic - The World's #1 Selling Bootstrap Admin Template by Keenthemes</title>
+    <title>{{setting('name')}} - {{ @$tab_title ?? ''}}</title>
    @include('admin.layouts.css')
     <!--end::Global Stylesheets Bundle-->
 

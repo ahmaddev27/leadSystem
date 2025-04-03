@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layouts.master', ['tab_title'=>$category->name])
 @section('MainTitle', 'Product Categories Management')
 @section('title', 'Leads System')
 @section('title_link', route('admin.dashboard'))

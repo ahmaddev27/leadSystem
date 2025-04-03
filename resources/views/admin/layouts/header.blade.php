@@ -11,9 +11,9 @@
                 <i class="ki-outline ki-abstract-14 fs-2"></i>
             </div>
             <!--begin::Logo image-->
-            <a href="../../demo55/dist/index.html">
-                <img alt="Logo" src="assets/media/logos/demo55-small.svg" class="h-25px theme-light-show"/>
-                <img alt="Logo" src="assets/media/logos/demo55-small-dark.svg" class="h-25px theme-dark-show"/>
+            <a href="{{route('admin.dashboard')}}">
+                <img alt="Logo" src="{{url('dashboard/assets/media/logos/demo55-small.svg')}}" class="h-25px theme-light-show"/>
+                <img alt="Logo" src="{{url('dashboard/assets/media/logos/demo55-small-dark.svg"')}}" class="h-25px theme-dark-show"/>
             </a>
             <!--end::Logo image-->
         </div>

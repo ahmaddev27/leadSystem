@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layouts.master', ['tab_title'=>'Products'])
 @section('MainTitle', 'Product  Management')
 @section('title', 'Leads System')
 @section('title_link', route('admin.dashboard'))
@@ -73,12 +73,76 @@
     </div>
 
 
+    <!-- Product Details Modal -->
+    <div class="modal fade" id="productDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Product Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-5">
+                                <img id="productMainImage" src="" class="img-fluid rounded" style="max-height: 300px;">
+                            </div>
+                            <div class="row" id="productGallery"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-bordered">
+                                <tbody>
+                                <tr>
+                                    <th width="30%">Name</th>
+                                    <td id="productName"></td>
+                                </tr>
+                                <tr>
+                                    <th>Description</th>
+                                    <td id="productDescription"></td>
+                                </tr>
+                                <tr>
+                                    <th>Price</th>
+                                    <td id="productPrice"></td>
+                                </tr>
+                                <tr>
+                                    <th>Category</th>
+                                    <td id="productCategory"></td>
+                                </tr>
+                                <tr>
+                                    <th>Tags</th>
+                                    <td id="productTags"></td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td id="productStatus"></td>
+                                </tr>
+                                <tr>
+                                    <th>Created At</th>
+                                    <td id="productCreatedAt"></td>
+                                </tr>
+                                <tr>
+                                    <th>Last Updated</th>
+                                    <td id="productUpdatedAt"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @stop
 
 @push('js')
     <link href="{{url('dashboard/assets/plugins/custom/datatables/datatables.bundle.css')}}" rel="stylesheet"
           type="text/css"/>
     <script src="{{url('dashboard/assets/plugins/custom/datatables/datatables.bundle.js')}}"></script>
+
 
 
 
@@ -117,109 +181,121 @@
 
             // Handle click on "View Questions"
 
-            $(document).on('click', '.view-questions', function (e) {
-                e.preventDefault();
-                const categoryId = $(this).data('id');
-                const modal = $('#kt_modal_category_details');
+            $(document).ready(function() {
+                // Initialize DataTable if you haven't already
+                $('#productsTable').DataTable();
 
-                // Reset tabs to questions tab
-                $('#category-details-tabs .nav-link').removeClass('active');
-                $('#category-details-tabs .nav-link:first').addClass('active');
-                $('.tab-pane').removeClass('show active');
-                $('#kt_tab_questions').addClass('show active');
+                // Handle view details click
+                $(document).on('click', '.view-details', function(e) {
+                    e.preventDefault();
+                    const productId = $(this).data('id');
+                    const modal = $('#productDetailsModal');
 
-                // Set category name in title
-                const categoryName = $(this).closest('tr').find('td:nth-child(3)').text().trim();
-                $('#category-modal-title').text('Details: ' + categoryName);
-
-                // Show loading states
-                $('#questions-content').html(`
-        <div class="text-center py-10">
+                    // Show loading state
+                    modal.modal('show');
+                    modal.find('.modal-body').html(`
+        <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
     `);
 
-                $('#commissions-content').html(`
-        <div class="text-center py-10">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-    `);
+                    $.ajax({
+                        url: `/admin/products/details/${productId}`,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log('Response received:', response);
 
-                const baseEditUrl = "{{ route('admin.categories.edit', ['category' => 'CATEGORY_ID']) }}";
+                            if (response.success && response.data) {
+                                const product = response.data;
+                                let html = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4 text-center">
+                                <img src="${product.main_image_url}"
+                                     class="img-fluid rounded border"
+                                     style="max-height: 300px; width: auto;">
+                            </div>
+                            <div class="row g-2" id="productGallery">
+                `;
 
-                // Show modal
-                modal.modal('show');
-
-                // Load data via AJAX
-                $.ajax({
-                    url: "{{ route('admin.categories.details', '') }}/" + categoryId,
-                    type: "GET",
-                    success: function (response) {
-                        $('#edit_category_id').attr('href', baseEditUrl.replace('CATEGORY_ID', categoryId));
-                        $('#category_details').html(response.category.description);
-                        $('#category_image').css('background-image', 'url(' + response.category.image + ')');
-                        // Render Questions
-                        if (response.questions && response.questions.length > 0) {
-                            let html = '<div class="table-responsive">';
-                            html += '<table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">';
-                            html += '<thead><tr><th>#</th><th>Question</th><th>Type</th><th>Required</th><th>Options</th></tr></thead>';
-                            html += '<tbody>';
-
-                            response.questions.forEach(function (question, index) {
-                                html += '<tr>';
-                                html += '<td>' + (index + 1) + '</td>';
-                                html += '<td>' + question.question + '</td>';
-                                html += '<td><span class="badge badge-light-primary">' + question.field_type + '</span></td>';
-                                html += '<td>' + (question.is_required ? '<span class="badge badge-light-success">Yes</span>' : '<span class="badge badge-light-danger">No</span>') + '</td>';
-                                html += '<td>' + (question.options ? question.options : 'N/A') + '</td>';
-                                html += '</tr>';
-                            });
-
-                            html += '</tbody></table></div>';
-                            $('#questions-content').html(html);
-                        } else {
-                            $('#questions-content').html('<div class="text-center py-10"><p>No questions found for this category.</p></div>');
-                        }
-
-                        // Render Commissions
-                        if (response.commissions) {
-                            let html = '<div class="table-responsive">';
-                            html += '<table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">';
-                            html += '<thead><tr><th>Lead Type</th><th>Commission Percentage</th></tr></thead>';
-                            html += '<tbody>';
-
-                            const commissionTypes = {
-                                'unqualified': 'Unqualified Lead (Campaign Lead)',
-                                'qualified': 'Qualified Lead (Call Centre Verified)',
-                                'converted': 'Converted Lead (Contract Signed)'
-                            };
-
-                            for (const [type, percentage] of Object.entries(response.commissions)) {
-                                if (commissionTypes[type]) {
-                                    html += '<tr>';
-                                    html += '<td>' + commissionTypes[type] + '</td>';
-                                    html += '<td>' + percentage + '%</td>';
-                                    html += '</tr>';
+                                // Add gallery images
+                                if (product.images && product.images.length > 0) {
+                                    product.images.forEach(img => {
+                                        html += `
+                            <div class="col-4">
+                                <img src="${img.image_url}"
+                                     class="img-thumbnail"
+                                     style="height: 100px; width: 100%; object-fit: cover;">
+                            </div>
+                        `;
+                                    });
+                                } else {
+                                    html += `<div class="col-12 text-muted">No additional images</div>`;
                                 }
+
+                                html += `
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-bordered table-striped">
+                                <tbody>
+                                    <tr><th>Name</th><td>${product.name}</td></tr>
+                                    <tr><th>Price</th><td>$${product.price}</td></tr>
+                                    <tr><th>Category</th><td>${product.category}</td></tr>
+                                    <tr><th>Tags</th><td>${product.tags}</td></tr>
+                                    <tr><th>Status</th><td>
+                                        <span class="badge ${product.is_active ? 'bg-success' : 'bg-danger'}">
+                                            ${product.is_active ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </td></tr>
+                                    <tr><th>Created</th><td>${product.created_at}</td></tr>
+                                    <tr><th>Updated</th><td>${product.updated_at}</td></tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Description Section Below Table -->
+                            <div class="mt-4">
+                                <h5>Description</h5>
+                                <div class="border p-3 rounded bg-light">
+                                    ${product.description || '<span class="text-muted">No description provided</span>'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                                modal.find('.modal-body').html(html);
+                            } else {
+                                modal.find('.modal-body').html(`
+                    <div class="alert alert-danger">
+                        ${response.message || 'Failed to load product details'}
+                    </div>
+                `);
                             }
-
-                            html += '</tbody></table></div>';
-                            $('#commissions-content').html(html);
-                        } else {
-                            $('#commissions-content').html('<div class="text-center py-10"><p>No commission structure defined for this category.</p></div>');
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX Error:', status, error);
+                            modal.find('.modal-body').html(`
+                <div class="alert alert-danger">
+                    Error loading product details. Please try again.
+                    <div class="small text-muted mt-1">${error}</div>
+                </div>
+            `);
                         }
-                    },
-                    error: function () {
-                        $('#questions-content').html('<div class="text-center py-10"><p>Error loading category details.</p></div>');
-                        $('#commissions-content').html('<div class="text-center py-10"><p>Error loading commission details.</p></div>');
-                    }
+                    });
                 });
-            });
+                // Helper functions
+                function formatCurrency(amount) {
+                    return '$' + parseFloat(amount).toFixed(2);
+                }
 
+                function formatDate(dateString) {
+                    return new Date(dateString).toLocaleString();
+                }
+            });
             // Ensure action buttons work even after AJAX reload
             $('#kt_categories_table').on('draw.dt', function () {
                 KTMenu.createInstances();

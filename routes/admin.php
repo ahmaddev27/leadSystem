@@ -29,6 +29,7 @@ Route::prefix('admin')->as('admin.')->group(function () {
         Route::controller(ProductController::class)->group(function () {
             Route::get('products/details/{id}','details')->name('products.details');
             Route::get('products/list',  'list')->name('products.list');
+            Route::delete('products/images/delete/{id}',  'destroyImages')->name('products.images.destroy');
         });
     });
 

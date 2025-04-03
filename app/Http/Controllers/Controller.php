@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -23,17 +24,30 @@ abstract class Controller
 
     protected function deleteImage($relativePath)
     {
-        try {
-            if ($relativePath && Storage::exists($relativePath)) {
-                return Storage::delete($relativePath);
-            }
+        // Skip if no path provided
+        if (empty($relativePath)) {
             return false;
+        }
+
+        try {
+            // Check if file exists
+            if (!Storage::exists($relativePath)) {
+                return true; // Considered successful if file doesn't exist
+            }
+
+            // Delete the file
+            if (Storage::delete($relativePath)) {
+                return true;
+            }
+
+            Log::error("Failed to delete image (storage error): {$relativePath}");
+            return false;
+
         } catch (\Exception $e) {
-            report($e);
+            Log::error("Image deletion exception: {$relativePath} - " . $e->getMessage());
             return false;
         }
     }
-
     /**
      * Convert relative path to URL when needed (e.g., for API responses)
      */

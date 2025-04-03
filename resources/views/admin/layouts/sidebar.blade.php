@@ -156,36 +156,6 @@
                             </div>
                             <!--end:Menu item-->
 
-                            <!--begin:Menu item-->
-                            <div class="menu-item">
-                                <!--begin:Menu link-->
-                                <a class="menu-link"
-                                   href="https://preview.keenthemes.com/metronic8/demo55/layout-builder.html"
-                                   title="Build your layout and export HTML for server side integration"
-                                   data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click"
-                                   data-bs-placement="right">
-													<span class="menu-bullet">
-														<span class="bullet bullet-dot"></span>
-													</span>
-                                    <span class="menu-title">Layout Builder</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-                            <!--end:Menu item-->
-                            <!--begin:Menu item-->
-                            <div class="menu-item">
-                                <!--begin:Menu link-->
-                                <a class="menu-link"
-                                   href="https://preview.keenthemes.com/html/metronic/docs/getting-started/changelog"
-                                   target="_blank">
-													<span class="menu-bullet">
-														<span class="bullet bullet-dot"></span>
-													</span>
-                                    <span class="menu-title">Changelog v8.2.0</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-                            <!--end:Menu item-->
                         </div>
                         <!--end:Menu sub-->
                     </div>

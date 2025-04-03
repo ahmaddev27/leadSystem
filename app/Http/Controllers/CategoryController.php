@@ -423,7 +423,7 @@ class CategoryController extends Controller
         }
     }
 
-    public function details($id)
+        public function details($id)
     {
         $category = Category::with(['questions', 'commissionStructures.leadType'])->findOrFail($id);
 

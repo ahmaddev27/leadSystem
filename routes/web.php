@@ -11,6 +11,12 @@ Route::get('/clear', function () {
 });
 
 
+Route::get('/link', function () {
+    Artisan::call('storage:link');
+});
+
+
+
 
 Route::middleware('auth:admin')->group(function () {
     Route::get('/', function () {
@@ -27,3 +33,4 @@ require __DIR__.'/admin.php';
 
 // Company routes
 require __DIR__.'/company.php';
+

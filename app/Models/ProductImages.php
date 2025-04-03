@@ -18,4 +18,10 @@ class ProductImages extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function getImage()
+    {
+        return $this->image ? url('storage/'.$this->image) : null;
+    }
+
+
 }

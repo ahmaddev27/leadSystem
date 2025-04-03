@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layouts.master', ['tab_title'=>'Dashboard'])
 @section('MainTitle', 'Welcome to Leads System')
 @section('title', 'Leads System')
 @section('title_link', route('admin.dashboard'))
