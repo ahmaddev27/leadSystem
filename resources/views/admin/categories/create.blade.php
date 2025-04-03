@@ -243,7 +243,7 @@
 
                 <!--begin::Card footer-->
                 <div class="card-footer d-flex justify-content-end py-6 px-9">
-                    <button type="reset" class="btn btn-light btn-active-light-primary me-2">Discard</button>
+
                     <button type="submit" class="btn btn-primary" id="kt_project_settings_submit">Save Changes</button>
                 </div>
                 <!--end::Card footer-->

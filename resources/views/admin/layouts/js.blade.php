@@ -19,10 +19,19 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $(".form-select").select2();
+        $("#select2").select2();
     });
 </script>
 
+<script>
+
+
+    // The DOM elements you wish to replace with Tagify
+    var input1 = document.querySelector(".tags");
+    // Initialize Tagify components on the above inputs
+    new Tagify(input1);
+
+</script>
 
     <script>
         $(document).ready(function () {

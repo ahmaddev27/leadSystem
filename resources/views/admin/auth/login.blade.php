@@ -158,7 +158,7 @@ License: For each use you must have a valid license purchased only from above li
                             <!--end::Main wrapper-->
 
 
-                            <div class="fv-row mb-3 m-2">
+                            <div class="fv-row mb-5 m-2">
 
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" name="remember"

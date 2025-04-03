@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
-@section('MainTitle', 'Product Categories Management')
+@section('MainTitle', 'Product  Management')
 @section('title', 'Leads System')
 @section('title_link', route('admin.dashboard'))
-@section('subtitle1', 'Categories')
-@section('subtitle1_link', route('admin.categories.index'))
-@section('subtitle2', 'All Categories')
+@section('subtitle1', 'Products')
+@section('subtitle1_link', route('admin.products.index'))
+@section('subtitle2', 'All Products')
 @section('content')
 
     <div id="kt_app_content_container" class="app-container container-fluid">
@@ -19,7 +19,7 @@
                     <div class="card-header border-0 pt-6">
                         <!--begin::Card title-->
                         <div class="card-title">
-                            <h2>Categories</h2>
+                            <h2>Products</h2>
                         </div>
                         <!--begin::Card title-->
                         <!--begin::Card toolbar-->
@@ -27,8 +27,8 @@
                             <!--begin::Toolbar-->
                             <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
                                 <!--begin::Add customer-->
-                                <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
-                                    <i class="ki-outline ki-plus fs-2"></i>Add Category
+                                <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
+                                    <i class="ki-outline ki-plus fs-2"></i>Add Product
                                 </a>
                                 <!--end::Add customer-->
                             </div>
@@ -43,16 +43,16 @@
                         <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_categories_table">
                             <thead>
                             <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
-                                <th class="w-10px pe-2">
-{{--                                    <div class="form-check form-check-sm form-check-custom form-check-solid me-3">--}}
-{{--                                        <input class="form-check-input" type="checkbox" data-kt-check="true"--}}
-{{--                                               data-kt-check-target="#kt_categories_table .form-check-input" value="1"/>--}}
-{{--                                    </div>--}}
-                                </th>
+{{--                                <th class="w-10px pe-2">--}}
+{{--                                    --}}{{--                                    <div class="form-check form-check-sm form-check-custom form-check-solid me-3">--}}
+{{--                                    --}}{{--                                        <input class="form-check-input" type="checkbox" data-kt-check="true"--}}
+{{--                                    --}}{{--                                               data-kt-check-target="#kt_categories_table .form-check-input" value="1"/>--}}
+{{--                                    --}}{{--                                    </div>--}}
+{{--                                </th>--}}
                                 <th class="min-w-100px">Image</th>
                                 <th class="min-w-200px">Name</th>
-                                <th class="text-end min-w-100px">Products</th>
                                 <th class="text-end min-w-100px">Status</th>
+
                                 <th class="text-end min-w-100px">Created At</th>
                                 <th class="text-end min-w-70px">Actions</th>
                             </tr>
@@ -73,89 +73,6 @@
     </div>
 
 
-    <!--begin::Modal - Questions-->
-    <!--begin::Modal - Category Details-->
-    <div class="modal fade" id="kt_modal_category_details" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered mw-750px">
-            <div class="modal-content">
-                <!--begin::Modal header-->
-                <div class="modal-header">
-                    <h2 class="fw-bold" id="category-modal-title">Category Name</h2>
-                    <!--begin::Close-->
-                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
-                        <i class="ki-duotone ki-cross fs-2x"><span class="path1"></span><span class="path2"></span></i>
-                    </div>
-                    <!--end::Close-->
-
-
-
-
-                </div>
-                <!--end::Modal header-->
-
-                <!--begin::Modal body-->
-                <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
-                    <!--begin::Tabs-->
-                    <div class="float-end m-3" data-kt-customer-table-toolbar="base">
-                        <!--begin::Add customer-->
-                        <a id="edit_category_id" href="#"
-                           class="btn-sm btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary">
-                            <i class="bi bi-pencil-square">
-
-                            </i></a>
-                        <!--end::Add customer-->
-                    </div>
-
-                    <p id="category_details"></p>
-                        <div class="symbol symbol-70px m-3  float-end">
-                        <span id="category_image" class="symbol-label" style=""></span>
-                    </div>
-
-                    <ul class="nav nav-tabs nav-line-tabs nav-line-tabs-2x mb-5 fs-6" id="category-details-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#kt_tab_questions">Questions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#kt_tab_commissions">Commission
-                                Structures</a>
-                        </li>
-                    </ul>
-                    <!--end::Tabs-->
-
-                    <!--begin::Tab content-->
-                    <div class="tab-content" id="category-details-content">
-                        <!--begin::Tab panel-->
-                        <div class="tab-pane fade show active" id="kt_tab_questions" role="tabpanel">
-                            <div id="questions-content">
-                                <div class="text-center py-10">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--end::Tab panel-->
-
-                        <!--begin::Tab panel-->
-                        <div class="tab-pane fade" id="kt_tab_commissions" role="tabpanel">
-                            <div id="commissions-content">
-                                <div class="text-center py-10">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--end::Tab panel-->
-                    </div>
-                    <!--end::Tab content-->
-                </div>
-                <!--end::Modal body-->
-            </div>
-        </div>
-    </div>
-    <!--end::Modal - Category Details-->    <!--end::Modal - Questions-->
-
 @stop
 
 @push('js')
@@ -173,14 +90,13 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('admin.categories.list') }}",
+                    url: "{{ route('admin.products.list') }}",
                     type: "GET"
                 },
                 columns: [
                     // {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
                     {data: 'image', name: 'image', orderable: false, searchable: false},
                     {data: 'name', name: 'name'},
-                    {data: 'products_count', name: 'products_count', className: 'text-end'},
                     {data: 'status', name: 'is_active', className: 'text-end'},
                     {data: 'created_at', name: 'created_at', className: 'text-end'},
                     {data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-end'}
@@ -188,7 +104,7 @@
                 // columnDefs: [
                 //     {targets: [0, 1, 6], width: '50px'},
                 //     {targets: 2, width: '100px'},
-                //     {targets: , width: '100px'},
+                //     {targets:2 , width: '100px'},
                 //     {targets: 5, width: '150px'}
                 // ],
                 order: [[4, 'asc']],

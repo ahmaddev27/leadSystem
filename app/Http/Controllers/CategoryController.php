@@ -25,11 +25,11 @@ class CategoryController extends Controller
 
 
         return DataTables::of($categories)
-            ->addColumn('checkbox', function ($category) {
-                return '<div class="form-check form-check-sm form-check-custom form-check-solid">
-                <input class="form-check-input" type="checkbox" value="' . $category->id . '" />
-            </div>';
-            })
+//            ->addColumn('checkbox', function ($category) {
+//                return '<div class="form-check form-check-sm form-check-custom form-check-solid">
+//                <input class="form-check-input" type="checkbox" value="' . $category->id . '" />
+//            </div>';
+//            })
             ->addColumn('image', function ($category) {
                 return '<div class="symbol symbol-50px">
                 <span class="symbol-label" style="background-image:url(' . $category->getImage() . ');"></span>
@@ -74,7 +74,7 @@ class CategoryController extends Controller
                 <!--end::Menu item-->
                 <!--begin::Menu item-->
                 <div class="menu-item px-3">
-                    <a href="#" class="menu-link px-3 view-questions" data-id="'.$category->id.'">View Questions</a>
+                    <a href="#" class="menu-link px-3 view-questions" data-id="'.$category->id.'">View Details</a>
                 </div>
                 <!--end::Menu item-->
             </div>
