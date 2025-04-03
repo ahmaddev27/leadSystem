@@ -230,7 +230,7 @@
                                      class="img-thumbnail"
                                      style="height: 100px; width: 100%; object-fit: cover;">
                             </div>
-                        `;
+                   `;
                                     });
                                 } else {
                                     html += `<div class="col-12 text-muted">No additional images</div>`;
