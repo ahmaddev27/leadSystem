@@ -7,7 +7,7 @@
 @section('content')
     <div id="kt_app_content_container" class="app-container container-fluid">
 
-    <h1>Welcome</h1>
+    <h1>Welcome Admin</h1>
 
     </div>
 @stop

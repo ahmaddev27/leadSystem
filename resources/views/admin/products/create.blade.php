@@ -132,7 +132,7 @@
                         <!--end::Card body-->
                     </div>
                     <!--end::Category & tags-->
-                    
+
                 </div>
                 <!--end::Aside column-->
                 <!--begin::Main column-->
