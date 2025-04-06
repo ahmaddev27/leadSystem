@@ -37,14 +37,7 @@ jobs:
           composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
           composer dump-autoload --optimize --no-scripts
 
-      # 4. Environment setup
-#      - name: 🌱 Laravel Setup
-#        run: |
-#          [ -f .env ] || cp .env.example .env
-#          php artisan key:generate --force --no-interaction
-#          php artisan storage:link || true
-
-      # 5. Frontend assets (conditional)
+      # 4. Frontend assets (conditional)
       - name: 🛠️ Check for Frontend
         id: check_frontend
         run: |
@@ -60,7 +53,7 @@ jobs:
           npm ci --silent
           npm run build --silent
 
-      # 6. Deployment (with FTPS and retry logic)
+      # 5. Deployment (with FTPS and retry logic)
       - name: 🚀 Deploy to Server
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
@@ -68,8 +61,8 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT || '21' }}
-          protocol: ftps  # More reliable than FTP
-          security: strict  # FTPS explicit mode
+          protocol: ftps
+          security: loose  # Changed from "strict" to "loose" to fix certificate issue
           local-dir: ./
           server-dir: ${{ secrets.FTP_REMOTE_DIR || '/' }}
           log-level: verbose
@@ -90,7 +83,7 @@ jobs:
             composer.*
             phpunit.xml
 
-      # 7. Post-deployment verification
+      # 6. Post-deployment verification
       - name: ✅ Verify Deployment
         run: |
           echo "Deployment completed successfully at $(date)"
