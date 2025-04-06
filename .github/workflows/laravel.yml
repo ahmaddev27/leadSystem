@@ -61,7 +61,7 @@ jobs:
           npm run build --silent
 
       # 7. FTP Deployment
-      - name: 🚀 Deploy to cPanel
+      - name: 🚀 Deploy to cPanel (FTP)
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -82,4 +82,11 @@ jobs:
             composer.*
             package*.json
             vite.config.js
+          # Connection stability improvements:
+          retry-count: 3
+          retry-wait-time: 5000
+          timeout: 300000
+          # Transfer optimizations:
+          log-level: verbose
           dangerous-clean-slate: false
+          security: passive
