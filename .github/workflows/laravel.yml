@@ -1,43 +1,82 @@
-name: 🚀 Deploy Laravel Project to cPanel
+name: 🚀 Deploy Laravel to cPanel (Optimized)
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
+    paths-ignore: [ 'README.md', '.gitignore' ]
 
 jobs:
-  web-deploy:
-    name: 🎉 Deploy Laravel Project
+  deploy:
+    name: 🎯 Deploy Application
     runs-on: ubuntu-latest
     if: contains(github.event.head_commit.message, 'deploy')
 
     steps:
-      - name: 🚚 Get latest code
+      # 1. Checkout code
+      - name: 🛠️ Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: 📦 Cache Composer dependencies
+      # 2. Setup PHP
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, ctype, fileinfo, openssl, pdo, tokenizer, xml
+          coverage: none
+
+      # 3. Composer cache
+      - name: 📦 Cache dependencies
         uses: actions/cache@v3
         with:
-          path: vendor
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          path: |
+            ~/.composer/cache
+            vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-composer-
+            ${{ runner.os }}-php-
 
-      - name: 🚀 Clear Composer Cache
-        run: composer clear-cache
+      # 4. Install dependencies (without scripts)
+      - name: ⚙️ Install Composer dependencies
+        run: |
+          composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader --no-scripts
+          composer dump-autoload --optimize --no-scripts
 
-      - name: 🔄 Update Composer dependencies
-        run: composer update --no-dev --optimize-autoloader --no-scripts
+      # 5. Environment setup
+      - name: 🌱 Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate --no-interaction --force
+          php artisan storage:link
 
-      - name: 📦 Dump optimized autoload
-        run: composer dump-autoload --optimize --no-scripts
+      # 6. Build assets (if using Laravel Mix/Vite)
+      - name: 🛠️ Build assets (optional)
+        run: |
+          npm ci --silent
+          npm run build --silent
+        if: exists('package-lock.json')
 
-      - name: 📂 Sync files to cPanel via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.0
+      # 7. FTP Deployment
+      - name: 🚀 Deploy to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
-          local-dir: './'
-          force-full-deploy: true
+          port: ${{ secrets.FTP_PORT || '21' }}
+          protocol: ${{ secrets.FTP_PROTOCOL || 'ftp' }}
+          local-dir: ./
+          server-dir: ${{ secrets.FTP_REMOTE_DIR || '/' }}
+          exclude: |
+            .git/*
+            .github/*
+            node_modules/*
+            tests/*
+            *.md
+            .env
+            .gitignore
+            composer.*
+            package*.json
+            vite.config.js
+          dangerous-clean-slate: false
