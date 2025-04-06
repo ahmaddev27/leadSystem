@@ -16,8 +16,8 @@ License: For each use you must have a valid license purchased only from above li
 <head>
     <base href="{{url('/')}}"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{setting('name')}} - {{ @$tab_title ?? ''}}</title>
-   @include('admin.layouts.css')
+    <title>{{ $settings['name'] ?? 'My Site' }} - {{ $tab_title ?? '' }}</title>
+    @include('admin.layouts.css')
     <!--end::Global Stylesheets Bundle-->
 
     <script>// Frame-busting to prevent site from being loaded within a frame without permission (click-jacking) if (window.top != window.self) { window.top.location.replace(window.self.location.href); }</script>

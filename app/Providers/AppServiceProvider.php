@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,18 +20,15 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+
+    public function boot()
     {
-        // In AppServiceProvider or a custom provider
-
-        // Load all settings once and share them globally
-        $settings = Cache::remember('app_settings', 60 * 60, function () {
-            return \App\Models\Settings::all()->pluck('value', 'key')->toArray();
+        // Get settings from DB and cache them
+        $settings = Cache::rememberForever('app_settings', function () {
+            return DB::table('settings')->pluck('value', 'key')->toArray();
         });
 
-        // Share the settings globally using a singleton or the config system
-        app()->singleton('settings', function () use ($settings) {
-            return $settings;
-        });
+     View::share('settings', $settings);
     }
+
 }
