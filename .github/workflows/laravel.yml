@@ -1,4 +1,4 @@
-name: 🚀 Deploy Laravel to cPanel (Optimized)
+name: 🚀 Laravel cPanel Deployment (Stable)
 
 on:
   push:
@@ -15,8 +15,6 @@ jobs:
       # 1. Checkout code
       - name: 🛠️ Checkout repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       # 2. Setup PHP
       - name: 🐘 Setup PHP
@@ -26,42 +24,34 @@ jobs:
           extensions: mbstring, ctype, fileinfo, openssl, pdo, tokenizer, xml
           coverage: none
 
-      # 3. Composer cache
-      - name: 📦 Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.composer/cache
-            vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
-      # 4. Install dependencies (without scripts)
-      - name: ⚙️ Install Composer dependencies
+      # 3. Install dependencies
+      - name: 📦 Install Composer dependencies
         run: |
           composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader --no-scripts
           composer dump-autoload --optimize --no-scripts
 
+      # 4. Environment setup
 
-      # 6. Build assets (if using Laravel Mix/Vite)
-      - name: 🛠️ Build assets (if package-lock exists)
-        id: check_package
+
+
+      # 5. Build assets (if package.json exists)
+      - name: 🛠️ Check for frontend assets
+        id: check_assets
         run: |
           if [ -f package-lock.json ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "has_assets=true" >> $GITHUB_OUTPUT
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "has_assets=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: 🏗️ Run npm build
-        if: steps.check_package.outputs.exists == 'true'
+      - name: 🏗️ Build assets
+        if: steps.check_assets.outputs.has_assets == 'true'
         run: |
           npm ci --silent
           npm run build --silent
 
-      # 7. FTP Deployment
-      - name: 🚀 Deploy to cPanel (FTP)
+      # 6. FTP Deployment (Stable Configuration)
+      - name: 🚀 Deploy to cPanel
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -82,11 +72,6 @@ jobs:
             composer.*
             package*.json
             vite.config.js
-          # Connection stability improvements:
-          retry-count: 3
-          retry-wait-time: 5000
-          timeout: 300000
-          # Transfer optimizations:
           log-level: verbose
           dangerous-clean-slate: false
-          security: passive
+          security: loose  # Corrected from 'passive' to 'loose' or 'strict'
