@@ -43,12 +43,6 @@ jobs:
           composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader --no-scripts
           composer dump-autoload --optimize --no-scripts
 
-      # 5. Environment setup
-      - name: 🌱 Prepare environment
-        run: |
-          cp .env.example .env
-          php artisan key:generate --no-interaction --force
-          php artisan storage:link
 
       # 6. Build assets (if using Laravel Mix/Vite)
       - name: 🛠️ Build assets (if package-lock exists)
