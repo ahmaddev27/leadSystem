@@ -51,11 +51,20 @@ jobs:
           php artisan storage:link
 
       # 6. Build assets (if using Laravel Mix/Vite)
-      - name: 🛠️ Build assets (optional)
+      - name: 🛠️ Build assets (if package-lock exists)
+        id: check_package
+        run: |
+          if [ -f package-lock.json ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 🏗️ Run npm build
+        if: steps.check_package.outputs.exists == 'true'
         run: |
           npm ci --silent
           npm run build --silent
-        if: exists('package-lock.json')
 
       # 7. FTP Deployment
       - name: 🚀 Deploy to cPanel
