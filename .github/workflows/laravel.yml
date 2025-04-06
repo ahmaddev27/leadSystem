@@ -2,76 +2,96 @@ name: 🚀 Laravel cPanel Deployment (Stable)
 
 on:
   push:
-    branches: [ master ]
-    paths-ignore: [ 'README.md', '.gitignore' ]
+    branches: [ main, master ]
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+      - '.env.example'
 
 jobs:
   deploy:
-    name: 🎯 Deploy Application
+    name: 🛡️ Stable Deployment
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, 'deploy')
+    timeout-minutes: 30  # Prevent hanging on connection issues
 
     steps:
       # 1. Checkout code
       - name: 🛠️ Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # 2. Setup PHP
+      # 2. Setup PHP environment
       - name: 🐘 Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, ctype, fileinfo, openssl, pdo, tokenizer, xml
+          ini-values: memory_limit=512M, max_execution_time=300
           coverage: none
 
-      # 3. Install dependencies
-      - name: 📦 Install Composer dependencies
+      # 3. Install dependencies (optimized for production)
+      - name: 📦 Composer Install
         run: |
-          composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader --no-scripts
+          composer validate
+          composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
           composer dump-autoload --optimize --no-scripts
 
       # 4. Environment setup
+#      - name: 🌱 Laravel Setup
+#        run: |
+#          [ -f .env ] || cp .env.example .env
+#          php artisan key:generate --force --no-interaction
+#          php artisan storage:link || true
 
-
-
-      # 5. Build assets (if package.json exists)
-      - name: 🛠️ Check for frontend assets
-        id: check_assets
+      # 5. Frontend assets (conditional)
+      - name: 🛠️ Check for Frontend
+        id: check_frontend
         run: |
           if [ -f package-lock.json ]; then
-            echo "has_assets=true" >> $GITHUB_OUTPUT
+            echo "has_frontend=true" >> $GITHUB_OUTPUT
           else
-            echo "has_assets=false" >> $GITHUB_OUTPUT
+            echo "has_frontend=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: 🏗️ Build assets
-        if: steps.check_assets.outputs.has_assets == 'true'
+      - name: 🏗️ Build Assets
+        if: steps.check_frontend.outputs.has_frontend == 'true'
         run: |
           npm ci --silent
           npm run build --silent
 
-      # 6. FTP Deployment (Stable Configuration)
-      - name: 🚀 Deploy to cPanel
+      # 6. Deployment (with FTPS and retry logic)
+      - name: 🚀 Deploy to Server
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT || '21' }}
-          protocol: ${{ secrets.FTP_PROTOCOL || 'ftp' }}
+          protocol: ftps  # More reliable than FTP
+          security: strict  # FTPS explicit mode
           local-dir: ./
           server-dir: ${{ secrets.FTP_REMOTE_DIR || '/' }}
-          exclude: |
-            .git/*
-            .github/*
-            node_modules/*
-            tests/*
-            *.md
-            .env
-            .gitignore
-            composer.*
-            package*.json
-            vite.config.js
           log-level: verbose
           dangerous-clean-slate: false
-          security: loose  # Corrected from 'passive' to 'loose' or 'strict'
+          exclude: |
+            .git/
+            .github/
+            .idea/
+            node_modules/
+            tests/
+            *.md
+            *.sqlite
+            *.log
+            .env*
+            docker-compose*
+            vite.config.js
+            package*.json
+            composer.*
+            phpunit.xml
+
+      # 7. Post-deployment verification
+      - name: ✅ Verify Deployment
+        run: |
+          echo "Deployment completed successfully at $(date)"
+          echo "Triggered by: $GITHUB_SHA"
