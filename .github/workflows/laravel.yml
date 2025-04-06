@@ -3,20 +3,18 @@ name: 🚀 Deploy Laravel Project to cPanel
 on:
   push:
     branches:
-      - master  # Deploy on push to the main branch
+      - master
 
 jobs:
   web-deploy:
     name: 🎉 Deploy Laravel Project
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, 'deploy')  # Only run if commit message contains 'deploy'
+    if: contains(github.event.head_commit.message, 'deploy')
 
     steps:
-      # Step 1: Checkout the latest code
-      - name: � Get latest code
+      - name: 🚚 Get latest code
         uses: actions/checkout@v3
 
-      # Step 2: Cache Composer dependencies
       - name: 📦 Cache Composer dependencies
         uses: actions/cache@v3
         with:
@@ -25,26 +23,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
 
-      # Step 3: Clear Composer Cache
       - name: 🚀 Clear Composer Cache
         run: composer clear-cache
 
-      # Step 4: Update Composer dependencies
       - name: 🔄 Update Composer dependencies
         run: composer update --no-dev --optimize-autoloader --no-scripts
 
-      # Step 5: Dump optimized autoload
       - name: 📦 Dump optimized autoload
-        run: composer dump-autoload --optimize
+        run: composer dump-autoload --optimize --no-scripts
 
-      # Step 6: Sync files via FTP (using SamKirkland's Action)
       - name: 📂 Sync files to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
-          server: ${{ secrets.FTP_HOST }}       # Your FTP server address
-          username: ${{ secrets.FTP_USERNAME }}   # Your FTP username
-          password: ${{ secrets.FTP_PASSWORD }}   # Your FTP password
-          port: 21                                # The FTP port (usually 21)
-          local-dir: './'                         # Upload the entire working directory
-          force-full-deploy: true                 # Force uploading all files, including vendor
-
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          local-dir: './'
+          force-full-deploy: true
